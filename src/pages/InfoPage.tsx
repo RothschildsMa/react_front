@@ -35,10 +35,6 @@ function InfoPage() {
     return employees.slice(start, end);
   }, [employees, currentPage]);
 
-  useEffect(() => {
-    initialize();
-  }, []);
-
   const initialize = async () => {
     try {
       const [empList, genders, departments] = await Promise.all([
@@ -65,13 +61,19 @@ function InfoPage() {
     }
   };
 
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      void initialize();
+    });
+  }, []);
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value === '100' ? '' : value,
+      [name]: value,
     }));
   };
 
@@ -85,7 +87,11 @@ function InfoPage() {
 
   const handleSearch = async () => {
     try {
-      const searched = await searchEmployees(form);
+      const searched = await searchEmployees({
+        ...form,
+        genderId: form.genderId === '100' ? '' : form.genderId,
+        deptId: form.deptId === '100' ? '' : form.deptId
+      });
       setEmployees(searched);
       setCheckedIds([]);
       setCurrentPage(1);
