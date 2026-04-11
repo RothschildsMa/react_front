@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../types/info';
+import type { ApiResponse, Employee } from '../types/info';
 
 export type RegisterData = {
   empId: number;
@@ -16,7 +16,7 @@ export async function initRegister(
   const url = `/mipha/api/register/${mode}?empId=${empId ?? ''}`;
 
   const response = await fetch(url);
-  const json: ApiResponse<any> = await response.json();
+  const json: ApiResponse<Employee> = await response.json();
 
   if (json.status !== 200) {
     throw new Error('初期化失敗');
